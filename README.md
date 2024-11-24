@@ -1,11 +1,4 @@
-<<<<<<< HEAD
-<<<<<<< HEAD
-# CheerPing
 🌟 CheerPing에 오신 것을 환영합니다! 🌟
-=======
-# cheerping backend 서버입니다.
->>>>>>> backend
-=======
 # 실행 방법
 ## 목차
 - [파일 tree 구조](#파일-tree-구조)
