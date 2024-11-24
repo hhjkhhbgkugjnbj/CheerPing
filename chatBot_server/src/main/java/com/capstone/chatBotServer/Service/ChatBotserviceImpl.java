@@ -30,10 +30,11 @@ public class ChatBotserviceImpl implements chatBotservice {
 	
 	@Override
 	public String sendToPythonMessage(String message) throws Exception {
+		System.out.println("message : " + message);
 		// 메세지를 받음
 		// 파이썬 API 호출
-		//URL url = new URL("https://99cc-128-2-204-6.ngrok-free.app/chat");
-		URL url = new URL("http://localhost:5001/chat");
+		URL url = new URL("https://f541-128-2-204-6.ngrok-free.app/chat");
+		//URL url = new URL("http://localhost:5001/chat");
 		HttpURLConnection con = (HttpURLConnection) url.openConnection();
 		con.setRequestMethod("POST");
 		con.setRequestProperty("Content-Type", "application/json");

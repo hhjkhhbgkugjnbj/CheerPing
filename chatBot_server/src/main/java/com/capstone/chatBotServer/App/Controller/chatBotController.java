@@ -36,7 +36,11 @@ public class chatBotController {
 		
 		try {
 			System.out.println("userMessage: " + chat.getMessage());
-			String AIMessage = chatBotserviceImpl.sendToPythonMessage(chat.getMessage());
+			String message = "{\r\n"
+					+ "    \"message\": \""+ chat.getMessage() +"\"\r\n"
+					+ "}\r\n"
+					+ "";
+			String AIMessage = chatBotserviceImpl.sendToPythonMessage(message);
 			try {
 				LocalDateTime now = LocalDateTime.now();
 				
@@ -62,6 +66,40 @@ public class chatBotController {
 		}
 
 	}
+
+//	@PostMapping("/send")
+//	public ResponseEntity<?> sendMessage(@RequestBody String message){
+//		boolean status = true;
+//		
+//		try {
+//			System.out.println("message : " + message);
+//			String AIMessage = chatBotserviceImpl.sendToPythonMessage(message);
+//			try {
+//				LocalDateTime now = LocalDateTime.now();
+//				
+//				// 포맷
+//		        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss'Z'");
+//		        String formattedTimestamp = now.format(formatter);
+//		        
+//				//chatBotserviceImpl.saveChatMessage(chat.getUserId(), chat.getMessage(), AIMessage, formattedTimestamp);
+//				System.out.println("데이터 저장 성공");
+//			}catch (Exception e) {
+//				status = false;
+//				return ResponseEntity.ok().body(new CMRespDto<>(1, "데이터 저장 실패", status));
+//			}
+//			// 보내기 전에 인코딩
+//			// String encodeMessage = URLEncoder.encode(AIMessage);
+//			// 해당 코드에서 MongoDB에 질문과 대답 정리
+//			// 질문과 대답 스키마를 공백으로 구분
+//			
+//			return ResponseEntity.ok().body(new CMRespDto<>(1,"메세지 전송 성공",AIMessage));
+//		} catch (Exception e) {
+//			status = false;
+//			return ResponseEntity.ok().body(new CMRespDto<>(1,"메세지 전송 실패",status));
+//		}
+//
+//	}
+
 	
 	// 데이터베이스에서 해당 기기의 ID를 구분하여 대화 기록을 전부 Load
 	// @RequestParam은 api 경로에 x
