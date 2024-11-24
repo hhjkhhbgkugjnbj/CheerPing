@@ -1,4 +1,3 @@
-# Cheerping backend 서버입니다.
 # 실행 방법
 ## 목차
 - [파일 tree 구조](#파일-tree-구조)
