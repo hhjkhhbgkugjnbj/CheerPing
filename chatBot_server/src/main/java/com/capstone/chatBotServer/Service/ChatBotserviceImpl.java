@@ -12,9 +12,11 @@ import org.json.JSONObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.data.mongodb.core.MongoTemplate;
+import org.springframework.data.mongodb.core.query.Criteria;
+import org.springframework.data.mongodb.core.query.Query;
 import org.springframework.stereotype.Service;
 
-import com.capstone.chatBotServer.App.Dto.ChatMessage;
+import com.capstone.chatBotServer.App.Dto.ChatMessageDto;
 import com.capstone.chatBotServer.Chat.ChatMessageRepository;
 import com.mongodb.MongoWriteException;
 
@@ -34,7 +36,8 @@ public class ChatBotserviceImpl implements chatBotservice {
 		// 메세지를 받음
 		// 파이썬 API 호출
 		//URL url = new URL("https://f541-128-2-204-6.ngrok-free.app/chat");
-		URL url = new URL("http://localhost:5001/chat");
+		//URL url = new URL("http://localhost:5001/chat");
+		URL url = new URL("http://128.2.204.6:8077/chat");
 		HttpURLConnection con = (HttpURLConnection) url.openConnection();
 		con.setRequestMethod("POST");
 		con.setRequestProperty("Content-Type", "application/json");
@@ -62,7 +65,7 @@ public class ChatBotserviceImpl implements chatBotservice {
 
 	@Override
 	public void saveChatMessage(String userId, String userMessage, String AIMessage, String timestemp) throws Exception {
-		ChatMessage chatMessage = new ChatMessage(userId, userMessage, AIMessage, timestemp);
+		ChatMessageDto chatMessage = new ChatMessageDto(userId, userMessage, AIMessage, timestemp);
 	    
         logger.debug("Created chat message object: {}", chatMessage);
         
@@ -73,11 +76,11 @@ public class ChatBotserviceImpl implements chatBotservice {
             logger.debug("Database stats: {}", dbStats.toJson());
             
             // 저장 시도
-            ChatMessage savedMessage = mongoTemplate.save(chatMessage, "userRecord");
+            ChatMessageDto savedMessage = mongoTemplate.save(chatMessage, "userRecord");
             logger.info("Message saved successfully with ID: {}", savedMessage.getId());
             
             // 저장된 데이터 확인
-            ChatMessage retrievedMessage = mongoTemplate.findById(savedMessage.getId(), ChatMessage.class, "userRecord");
+            ChatMessageDto retrievedMessage = mongoTemplate.findById(savedMessage.getId(), ChatMessageDto.class, "userRecord");
             if (retrievedMessage != null) {
                 logger.info("Successfully verified saved message: {}", retrievedMessage);
             } else {
@@ -94,8 +97,23 @@ public class ChatBotserviceImpl implements chatBotservice {
 	}
 
 	@Override
-	public List<ChatMessage> loadChatMessageByUserId(String userId) throws Exception {
+	public List<ChatMessageDto> loadChatMessageByUserId(String userId) throws Exception {
 		System.out.println(chatMessageRepository.findByUserId(userId));
 		return chatMessageRepository.findByUserId(userId);
+	}
+
+	@Override
+	public void deleteMessgae(String userId, String timestamp) throws Exception {
+        try {
+            Query query = new Query();
+            query.addCriteria(Criteria.where("userId").is(userId).and("timestamp").is(timestamp));
+            
+            mongoTemplate.remove(query, ChatMessageDto.class, "userRecord");
+            
+            logger.info("Message deleted successfully for userId: {} at timestamp: {}", userId, timestamp);
+        } catch (Exception e) {
+            logger.error("Error while deleting message: {}", e.getMessage());
+            throw new Exception("메시지 삭제 중 오류 발생: " + e.getMessage(), e);
+        }
 	}
 }

@@ -13,7 +13,7 @@ import lombok.ToString;
 @NoArgsConstructor
 @AllArgsConstructor
 @ToString
-public class ChatMessage {
+public class ChatMessageDto {
     @Id
     private String id;
     
@@ -29,7 +29,7 @@ public class ChatMessage {
     @Field("timestamp")
     private String timestamp;
     
-    public ChatMessage(String userId, String userMessage, String AIMessage, String timestamp) {
+    public ChatMessageDto(String userId, String userMessage, String AIMessage, String timestamp) {
         this.userId = userId;
         this.userMessage = userMessage;
         this.AIMessage = AIMessage;
