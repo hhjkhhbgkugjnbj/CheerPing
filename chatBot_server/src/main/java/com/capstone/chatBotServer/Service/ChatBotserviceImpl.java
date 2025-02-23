@@ -74,7 +74,7 @@ public class ChatBotserviceImpl implements chatBotservice {
             Document dbStats = mongoTemplate.getDb().runCommand(new Document("dbStats", 1));
             logger.info("Connected to database: {}", mongoTemplate.getDb().getName());
             logger.debug("Database stats: {}", dbStats.toJson());
-            
+
             // 저장 시도
             ChatMessageDto savedMessage = mongoTemplate.save(chatMessage, "userRecord");
             logger.info("Message saved successfully with ID: {}", savedMessage.getId());
