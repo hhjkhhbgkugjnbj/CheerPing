@@ -17,7 +17,7 @@ import org.springframework.data.mongodb.core.query.Query;
 import org.springframework.stereotype.Service;
 
 import com.capstone.chatBotServer.App.Dto.ChatMessageDto;
-import com.capstone.chatBotServer.Chat.ChatMessageRepository;
+import com.capstone.chatBotServer.Repository.ChatMessageRepository;
 import com.mongodb.MongoWriteException;
 
 import lombok.RequiredArgsConstructor;
@@ -32,12 +32,12 @@ public class ChatBotserviceImpl implements chatBotservice {
 	
 	@Override
 	public String sendToPythonMessage(String message) throws Exception {
-		System.out.println("message : " + message);
+		//System.out.println("message : " + message);
 		// 메세지를 받음
 		// 파이썬 API 호출
 		//URL url = new URL("https://f541-128-2-204-6.ngrok-free.app/chat");
-		//URL url = new URL("http://localhost:5001/chat");
-		URL url = new URL("http://128.2.204.6:8077/chat");
+		URL url = new URL("http://localhost:5001/chat");
+		//URL url = new URL("http://128.2.204.6:8077/chat");
 		HttpURLConnection con = (HttpURLConnection) url.openConnection();
 		con.setRequestMethod("POST");
 		con.setRequestProperty("Content-Type", "application/json");
@@ -58,7 +58,7 @@ public class ChatBotserviceImpl implements chatBotservice {
 		JSONObject jsonObject = new JSONObject(jsonResponse);
 		String value = jsonObject.getString("data");
 		
-		System.out.println(value);
+		// System.out.println(value);
 			return value;
 		}
 	}
@@ -98,7 +98,7 @@ public class ChatBotserviceImpl implements chatBotservice {
 
 	@Override
 	public List<ChatMessageDto> loadChatMessageByUserId(String userId) throws Exception {
-		System.out.println(chatMessageRepository.findByUserId(userId));
+		// System.out.println(chatMessageRepository.findByUserId(userId));
 		return chatMessageRepository.findByUserId(userId);
 	}
 

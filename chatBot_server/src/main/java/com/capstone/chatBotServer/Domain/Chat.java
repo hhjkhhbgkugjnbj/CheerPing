@@ -1,4 +1,4 @@
-package com.capstone.chatBotServer.Chat;
+package com.capstone.chatBotServer.Domain;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;

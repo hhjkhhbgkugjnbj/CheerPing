@@ -1,5 +1,6 @@
 package com.capstone.chatBotServer.App.Controller;
 
+import java.net.URLEncoder;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
@@ -14,7 +15,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.capstone.chatBotServer.App.Dto.CMRespDto;
 import com.capstone.chatBotServer.App.Dto.ChatMessageDto;
-import com.capstone.chatBotServer.Chat.Chat;
+import com.capstone.chatBotServer.Domain.Chat;
 import com.capstone.chatBotServer.Service.ChatBotserviceImpl;
 
 import lombok.RequiredArgsConstructor;
@@ -25,15 +26,16 @@ import lombok.RequiredArgsConstructor;
 public class chatBotController {
 
 	private final ChatBotserviceImpl chatBotserviceImpl;
-	// 플러터에서 메세지 받기 확인
-	// 스프링에서 메세지 가공 후 전송
-	// 파이썬에게 API 호출
+
+	// 1. 플러터에서 메세지 받기
+	// 2. 스프링에서 메세지 가공 후 전송
+	// 3. 파이썬 API 호출
 	@PostMapping("/send")
 	public ResponseEntity<?> sendMessage(@RequestBody Chat chat){
 		boolean status = true;
 		
 		try {
-			System.out.println("userMessage: " + chat.getMessage());
+			//System.out.println("userMessage: " + chat.getMessage());
 			String message = "{\r\n"
 					+ "    \"message\": \""+ chat.getMessage() +"\"\r\n"
 					+ "}\r\n"
@@ -47,17 +49,17 @@ public class chatBotController {
 		        String formattedTimestamp = now.format(formatter);
 		        
 				chatBotserviceImpl.saveChatMessage(chat.getUserId(), chat.getMessage(), AIMessage, formattedTimestamp);
-				System.out.println("데이터 저장 성공");
+				// System.out.println("데이터 저장 성공");
 			}catch (Exception e) {
 				status = false;
 				return ResponseEntity.ok().body(new CMRespDto<>(1, "데이터 저장 실패", status));
 			}
 			// 보내기 전에 인코딩
-			// String encodeMessage = URLEncoder.encode(AIMessage);
+			String encodeMessage = URLEncoder.encode(AIMessage);
 			// 해당 코드에서 MongoDB에 질문과 대답 정리
 			// 질문과 대답 스키마를 공백으로 구분
 			
-			return ResponseEntity.ok().body(new CMRespDto<>(1,"메세지 전송 성공",AIMessage));
+			return ResponseEntity.ok().body(new CMRespDto<>(1,"메세지 전송 성공",encodeMessage));
 		} catch (Exception e) {
 			status = false;
 			return ResponseEntity.ok().body(new CMRespDto<>(-1,"메세지 전송 실패",status));
@@ -65,17 +67,14 @@ public class chatBotController {
 
 	}
 
-	// 데이터베이스에서 해당 기기의 ID를 구분하여 대화 기록을 전부 Load
-	// @RequestParam은 api 경로에 x
-	// @Pathvariable는 api 경로에 작성
 	@GetMapping("/load")
 	public ResponseEntity<?> loadMessage(@RequestParam("userId") String userId) {
 		boolean status = true;
 		
 		try {
 			List<ChatMessageDto> chatMessage = chatBotserviceImpl.loadChatMessageByUserId(userId);
-			System.out.println(userId);
-			System.out.println(chatMessage);
+			// System.out.println(userId);
+			// System.out.println(chatMessage);
 			return ResponseEntity.ok().body(new CMRespDto<>(1,"대화 기록 불러오기 성공",chatMessage));
 		} catch (Exception e) {
 			status = false;
